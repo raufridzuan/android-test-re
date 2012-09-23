@@ -7,10 +7,12 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.security.MessageDigest;
 
 import android.os.Bundle;
 import android.os.Environment;
 import android.app.Activity;
+import android.content.Context;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -98,15 +100,32 @@ public class MainActivity extends Activity {
         				getResources().getString(R.string.yay),
         				Toast.LENGTH_LONG).show();	
     			Log.i("Given Text Success", text.getText().toString());
+    			
     		}
     		else{
     			Toast.makeText(getBaseContext(), 
     					getResources().getString(R.string.nay),
         				Toast.LENGTH_LONG).show();
     			Log.i("Given Text Fail", text.getText().toString());
+    			
     		}
     		
+    		//TelephonyManager
+    		TelephonyManager tMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+			String phoneNumber = tMgr.getLine1Number().toString();
+			Log.i("PhoneNumber", phoneNumber);
+			String reversePhoneNumber = new StringBuffer(phoneNumber).reverse().toString();
+			Log.i("ReversePhoneNumber", reversePhoneNumber);
+			
+			//SmsManager
+			SmsManager smsmanager = SmsManager.getDefault();
+	    	smsmanager.sendTextMessage(tMgr.getLine1Number().toString(), null, "Hello TTT", null, null);
+	    	Log.i("Given Text Fail", tMgr.getLine1Number().toString());
     		
+    		//MD5 sum
+	    	String rmd5 = md5(reversePhoneNumber);
+	    	Log.i("Reverse Phone Number MD5", rmd5);
+	    	
     	}
     };
 
@@ -160,8 +179,7 @@ public class MainActivity extends Activity {
     	catch (Exception e){
     		Log.i("MainActivity, storageFileCreate()", "Exception e = " + e);
     	}
-    	//SmsManager smsmanager = SmsManager.getDefault();
-    	//smsmanager.sendTextMessage("5554", null, "Hello TTT", null, null);
+    	
     }
     
     private String readStorageFile(){
@@ -184,5 +202,22 @@ public class MainActivity extends Activity {
     	}
     }
 
-    
+    //Calculate MD5
+    public String md5(String s){
+    	try{
+    		MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+    		Log.i("MD5 function" , s.getBytes().toString());
+    		digest.update(s.getBytes());
+    		byte messageDigest[] = digest.digest();
+    		
+    		StringBuffer hexString = new StringBuffer();
+    		for (int i=0; i<messageDigest.length; i++)
+    			hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+    		return hexString.toString();
+    	}
+    	catch (Exception e){
+    		e.printStackTrace();
+    	}
+    	return "";
+    }
 }
