@@ -1,0 +1,10 @@
+<resources>
+
+    <string name="app_name">TTT Exercise 1</string>
+    <string name="hello_world">Hello TTT!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_tttexercise1">TTT Exercise 1</string>
+    <string name="TTT1">Key in the passphase</string>
+    <string name="btnOK">OK</string>
+
+</resources>
